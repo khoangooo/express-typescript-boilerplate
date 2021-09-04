@@ -1,48 +1,25 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Application, Request, Response } from "express";
 
-const app = express();
-interface LocationWithTimezone {
-  location: string;
-  timezoneName: string;
-  timezoneAbbr: string;
-  utcOffset: number;
-}
+const app: Application = express();
 
-const getLocationsWithTimezones = (request: Request, response: Response, next: NextFunction) => {
-  const locations: LocationWithTimezone[] = [
-    {
-      location: "Germany",
-      timezoneName: "Central European Time",
-      timezoneAbbr: "CET",
-      utcOffset: 1,
-    },
-    {
-      location: "China",
-      timezoneName: "China Standard Time",
-      timezoneAbbr: "CST",
-      utcOffset: 8,
-    },
-    {
-      location: "Argentina",
-      timezoneName: "Argentina Time",
-      timezoneAbbr: "ART",
-      utcOffset: -3,
-    },
-    {
-      location: "Japan",
-      timezoneName: "Japan Standard Time",
-      timezoneAbbr: "JST",
-      utcOffset: 9,
-    },
-  ];
+// Body parsing Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-  response.status(200).json(locations);
-};
-
-app.get("/", getLocationsWithTimezones);
+app.get("/", async (req: Request, res: Response): Promise<Response> => {
+  return res.status(200).send({
+    message: "Hello World!",
+  });
+});
 
 const PORT: number = 5000;
 
-app.listen(PORT, () => {
-  console.log(`Timezones by location application is running on port ${PORT}.`);
-});
+try {
+  app.listen(PORT, (): void => {
+    console.log(`Connected successfully on port ${PORT}`);
+  });
+} catch (error: unknown) {
+  if (error instanceof Error) {
+    console.error(`Error occured: ${error.message}`);
+  }
+}
